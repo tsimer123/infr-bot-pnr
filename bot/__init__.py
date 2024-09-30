@@ -1,0 +1,1 @@
+from bot.create_bot import dp, bot

@@ -1,0 +1,13 @@
+/env/
+/__pycache__/
+*/__pycache__/
+*/*/__pycache__/
+/service_files/
+conf.py
+variables_temp.py
+.env
+/backup/
+.env copy
+*.xlsx
+*.jpg
+alembic/versions/

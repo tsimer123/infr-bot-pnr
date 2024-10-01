@@ -82,12 +82,19 @@ async def process_choice(message: types.Message, state: FSMContext):
 @dp.message_handler(content_types=['document'], state=Form.file)
 async def download_ausweis(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
-        if data['src'] == 'Статистика УСПД Нартис': src = 'C:/temp/received/1/' + message.document.file_name
-        if data['src'] == 'Топология Гермес': src = 'C:/temp/received/2/' + message.document.file_name
-        if data['src'] == 'Иваново': src = 'C:/temp/received/3/' + message.document.file_name
-        if data['src'] == 'Липецк': src = 'C:/temp/received/4/' + message.document.file_name
-        if data['src'] == 'НиНо': src = 'C:/temp/received/5/' + message.document.file_name
-        if data['src'] == 'Смоленск': src = 'C:/temp/received/6/' + message.document.file_name
-        if data['src'] == 'Тамбов': src = 'C:/temp/received/7/' + message.document.file_name
+        if data['src'] == 'Статистика УСПД Нартис': src = '/app/natris_meters/' + message.document.file_name
+        if data['src'] == 'Топология Гермес': src = '/app/topology/' + message.document.file_name
+        if data['src'] == 'Иваново': src = '/app/ivanovo/' + message.document.file_name
+        if data['src'] == 'Липецк': src = '/app/lipetsk/' + message.document.file_name
+        if data['src'] == 'НиНо': src = '/app/nino/' + message.document.file_name
+        if data['src'] == 'Смоленск': src = '/app/smolensk/' + message.document.file_name
+        if data['src'] == 'Тамбов': src = '/app/tambov/' + message.document.file_name
+        # if data['src'] == 'Статистика УСПД Нартис': src = 'C:/temp/received/1/' + message.document.file_name
+        # if data['src'] == 'Топология Гермес': src = 'C:/temp/received/2/' + message.document.file_name
+        # if data['src'] == 'Иваново': src = 'C:/temp/received/3/' + message.document.file_name
+        # if data['src'] == 'Липецк': src = 'C:/temp/received/4/' + message.document.file_name
+        # if data['src'] == 'НиНо': src = 'C:/temp/received/5/' + message.document.file_name
+        # if data['src'] == 'Смоленск': src = 'C:/temp/received/6/' + message.document.file_name
+        # if data['src'] == 'Тамбов': src = 'C:/temp/received/7/' + message.document.file_name
     await message.document.download(src)
     await message.reply(f"<b>Сохранено</b>", parse_mode = 'HTML')

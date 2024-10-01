@@ -15,7 +15,7 @@ from matplotlib.ticker import MultipleLocator, FormatStrFormatter
 api = PromqlHttpApi('http://192.1.0.106:12190')
 @dp.message_handler(commands='job')
 async def command_job(message: types.Message) -> None:
-    locale.setlocale(locale.LC_TIME, 'ru_RU')
+    locale.setlocale(locale.LC_TIME, "ru_RU.UTF-8")
     plt.close('all')
     job = 'kroks-ural|kroks-msk'
     reqwest = 'node_uname_info{{job=~"{}"}}'.format(job)

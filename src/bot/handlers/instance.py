@@ -33,7 +33,7 @@ async def process_en(message: types.Message):
         parts2 = parts[2].split(':')
         instance = parts2[0]
         media = []
-        locale.setlocale(locale.LC_TIME, 'ru_RU')
+        locale.setlocale(locale.LC_TIME, "ru_RU.UTF-8")
         q_time = datetime.now()
         q_time1 = datetime(datetime.now().year, datetime.now().month, 1)
         device = 'wwan0'

@@ -9,7 +9,7 @@ from datetime import time
 from datetime import date, timedelta
 
 api = PromqlHttpApi('http://192.1.0.106:12190')
-locale.setlocale(locale.LC_TIME, 'ru_RU')
+locale.setlocale(locale.LC_TIME, "ru_RU.UTF-8")
 conn_string = 'postgresql://postgres:1234@localhost:5432/infr_bot_pnr'
 job = 'kroks-ural|kroks-msk'
 reqwest = 'node_uname_info{{job=~"{}"}}'.format(job)

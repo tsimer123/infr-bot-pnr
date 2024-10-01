@@ -1,0 +1,46 @@
+# version: "2.1"
+# services:  
+#   dirview:
+#     image: tsimer123/dirview:v11 
+#     hostname: dirview
+#     restart: always
+#     command: python ./dir_django_project/manage.py runserver 0.0.0.0:8000
+# python manage.py runserver 0.0.0.0:8000
+    #    - /app/dir_django_project/static/zabbix:/home/
+#     ports:
+#       - 8000:8000
+#       - 8001:8001
+
+version: '3.3'
+services:
+  web:
+      restart: always
+      build: .
+      command: python main.py -start_b
+      environment:
+        username_db: "postgres"
+        password_db: "1234"
+        host_db: "192.168.1.95"
+        port_db: "5432"
+        database: "infr_bot_pnr"
+        TOKEN: "1498994376:AAEoM9nphYrjMqN5eKtjSFWZQmgyhHxIg68"
+
+      volumes:
+
+    #   - /home/tsimer/pivot_nartis_meters:/app/dir_django_project/static/natris_meters
+    #   - /home/tsimer/topology:/app/dir_django_project/static/topology
+    #   - /home/tsimer/mrsk/ivanovo:/app/dir_django_project/static/ivanovo
+    #   - /home/tsimer/mrsk/lipetsk:/app/dir_django_project/static/lipetsk
+    #   - /home/tsimer/mrsk/nino:/app/dir_django_project/static/nino
+    #   - /home/tsimer/mrsk/smolensk:/app/dir_django_project/static/smolensk
+    #   - /home/tsimer/mrsk/tambov:/app/dir_django_project/static/tambov
+    #   - /home/tsimer/zb_loger:/app/dir_django_project/static/zb_loger
+    #   - /home/tsimer/distr_collector:/app/dir_django_project/static/distr
+    
+        - /C/temp/received/1:/app/natris_meters
+        - /C/temp/received/2:/app/topology
+        - /C/temp/received/3:/app/ivanovo
+        - /C/temp/received/4:/app/lipetsk
+        - /C/temp/received/5:/app/nino
+        - /C/temp/received/6:/app/smolensk
+        - /C/temp/received/7:/app/tambov

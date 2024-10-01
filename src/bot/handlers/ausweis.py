@@ -40,7 +40,8 @@ async def command_ausweis(message: types.Message, state: FSMContext):
         await message.reply('Ошибка Базы Данных (code error: 1003).\n Обратитесь к Администратору @etsimerman')
     
     full_name = message.from_user.full_name
-    permit = session.query(UsersPnr.admin).filter(UsersPnr.full_name == full_name).first()    
+    permit = session.query(UsersPnr.admin).filter(UsersPnr.full_name == full_name).first()
+    print(permit.admin)
     if permit is None:
         stmt = insert(UsersPnr).values(
             full_name = message.from_user.full_name,
@@ -55,7 +56,7 @@ async def command_ausweis(message: types.Message, state: FSMContext):
             conn.commit()
         await message.reply('В доступе отказано.\n Обратитесь к Администратору @etsimerman')
         return
-    elif permit == 0:
+    elif permit.admin == False:
         await message.reply('В доступе отказано.\n Обратитесь к Администратору @etsimerman')
         return
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, selective=True)

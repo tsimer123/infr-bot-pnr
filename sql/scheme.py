@@ -62,5 +62,16 @@ class NodeNetworkTransmitBytesTotal(Base):
      summa: Mapped[int] = mapped_column(BigInteger)
      date: Mapped[datetime] = mapped_column(DateTime())
 
+class UsersPnr(Base):
+     __tablename__ = "users_pnr"
+
+     id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+     user_id: Mapped[int] = mapped_column(Text())
+     username: Mapped[str | None] = mapped_column(Text())
+     first_name: Mapped[str | None] = mapped_column(Text())
+     last_name: Mapped[str | None] = mapped_column(Text())
+     full_name: Mapped[str | None] = mapped_column(Text())
+     admin: Mapped[Boolean] = mapped_column(Boolean())
+     
 def create_db():
      Base.metadata.create_all(engine)     

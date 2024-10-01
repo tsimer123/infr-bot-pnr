@@ -1,4 +1,5 @@
 import asyncio
+import pandas as pd
 import aiogram.utils.markdown as md
 from aiogram import types
 from bot.create_bot import dp, bot
@@ -12,7 +13,14 @@ from aiogram.utils import executor
 from services.command_start import start_user
 from services.log import write_log
 from services.render_replay_str import print_format_log_cmd
+from sql.engine import engine
+from sqlalchemy.orm import Session, sessionmaker
+from sql.scheme import UsersPnr
+from sqlalchemy import insert
 
+Session = sessionmaker(engine)
+session = Session()
+#db = engine
 class Form(StatesGroup):
     choice = State()
     file = State()
@@ -30,6 +38,26 @@ async def command_ausweis(message: types.Message, state: FSMContext):
     except Exception as ex:
         print_format_log_cmd(list_param_log_cmd, 'err', ex.args[0])
         await message.reply('Ошибка Базы Данных (code error: 1003).\n Обратитесь к Администратору @etsimerman')
+    
+    full_name = message.from_user.full_name
+    permit = session.query(UsersPnr.admin).filter(UsersPnr.full_name == full_name).first()    
+    if permit is None:
+        stmt = insert(UsersPnr).values(
+            full_name = message.from_user.full_name,
+            user_id = message.from_user.id,
+            username = message.from_user.username,
+            first_name = message.from_user.first_name,
+            last_name = message.from_user.last_name,
+            admin = 0
+        )
+        with engine.connect() as conn:
+            conn.execute(stmt)
+            conn.commit()
+        await message.reply('В доступе отказано.\n Обратитесь к Администратору @etsimerman')
+        return
+    elif permit == 0:
+        await message.reply('В доступе отказано.\n Обратитесь к Администратору @etsimerman')
+        return
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
     markup.add(*list)
     await message.reply("Выберете раздел", reply_markup=markup)

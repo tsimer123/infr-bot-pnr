@@ -61,7 +61,9 @@ async def command_job(message: types.Message) -> None:
     df3['sumtransmit'] =  round((df3.groupby(['instance'])['diff'].cumsum()/(1024*1024*1024)), 2)
     df2 = df3.groupby(['instance'])['sumtransmit'].last()
     df4 = pd.merge(df7, df2, left_on='instance', right_on='instance')
+    df4 = df4.sort_values('nodename')
     df5 = df4[['nodename', 'sumreceive', 'sumtransmit']].copy()
+    df5 = df5.sort_values('nodename')
 
     fig, ax = plt.subplots()
     fig.patch.set_visible(False)

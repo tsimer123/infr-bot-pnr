@@ -41,7 +41,7 @@ async def command_ausweis(message: types.Message, state: FSMContext):
     
     full_name = message.from_user.full_name
     permit = session.query(UsersPnr.admin).filter(UsersPnr.full_name == full_name).first()
-    print(permit.admin)
+    #print(permit.admin)
     if permit is None:
         stmt = insert(UsersPnr).values(
             full_name = message.from_user.full_name,

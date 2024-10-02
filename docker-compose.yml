@@ -23,7 +23,7 @@ services:
         host_db: "192.168.1.95"
         port_db: "5432"
         database: "infr_bot_pnr"
-        TOKEN: "1498994376:AAEoM9nphYrjMqN5eKtjSFWZQmgyhHxIg68"
+        TOKEN: "1498994376:AAGT7UWb1usyo3dS_l37zPM42pYfb1hYVsk"
 
       volumes:
 

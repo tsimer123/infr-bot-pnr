@@ -10,3 +10,4 @@ variables_temp.py
 *.xlsx
 *.jpg
 alembic/versions/
+docker-compose.yml

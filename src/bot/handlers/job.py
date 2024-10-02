@@ -12,62 +12,57 @@ from datetime import datetime
 from bot.create_bot import dp, bot
 from matplotlib.ticker import MultipleLocator, FormatStrFormatter
 
+job = 'kroks-ural|kroks-msk'
+noder = 'node_network_receive_bytes_total'
+nodet = 'node_network_transmit_bytes_total'
+
+q_time = datetime(datetime.now().year, datetime.now().month, 1)
+q_time1 = datetime(datetime.now().year, datetime.now().month, datetime.now().day)
+q_time2 = datetime.now()
+device = 'wwan0'
+step = '1200'
+job = 'kroks-ural|kroks-msk'
 api = PromqlHttpApi('http://192.1.0.106:12190')
+locale.setlocale(locale.LC_TIME, "ru_RU.UTF-8")
 @dp.message_handler(commands='job')
-async def command_job(message: types.Message) -> None:
-    locale.setlocale(locale.LC_TIME, "ru_RU.UTF-8")
+async def command_job(message: types.Message) -> None:   
     plt.close('all')
-    job = 'kroks-ural|kroks-msk'
     reqwest = 'node_uname_info{{job=~"{}"}}'.format(job)
     q = api.query(reqwest)
     df5 = q.to_dataframe()
-    noder = 'node_network_receive_bytes_total'
-    nodet = 'node_network_transmit_bytes_total'
-    q_time = datetime.now()
-    q_time1 = datetime(datetime.now().year, datetime.now().month, 1)
-    device = 'wwan0'
-    step = '1200'
-    job = 'kroks-ural|kroks-msk'
 
-    reqwest = '{} {{device="{}", job=~"{}"}}'.format(noder, device, job)
-    q = api.query_range(reqwest, q_time1, q_time , step)
-    df3 = q.to_dataframe()
-    df3.dropna()
-    df3 = df3.astype({"value": "Int64"})
-    df3["date"] = pd.to_datetime(df3["timestamp"] + 10800, unit="s")
-    df1 = df3.copy()
-    df1 = df1.drop_duplicates (subset=['instance'])
-    for inst in df1['instance']:
-        df3.loc[((df3['instance'] == inst)), 'diff'] = df3["value"] - df3.shift(1)["value"]
-    df3["diff"] = df3["diff"].fillna(0)
-    df3.loc[df3['diff'] <0, 'diff'] = df3["value"]
-    df3['sumreceive'] =  round((df3.groupby(['instance'])['diff'].cumsum()/(1024*1024*1024)), 2)
-    df2 = df3.groupby(['instance'])['sumreceive'].last()
+    df2 = prometh(noder, q_time, q_time2)
+    df2['sumreceive'] =  round((df2.groupby(['instance'])['diff'].cumsum()/(1024*1024*1024)), 2)
+    df2 = df2.groupby(['instance'])['sumreceive'].last()
     df6 = pd.merge(df5, df2, left_on='instance', right_on='instance')
     df7 = df6[['nodename', 'job', 'instance', 'sumreceive']].copy()
 
-    reqwest = '{} {{device="{}", job=~"{}"}}'.format(nodet, device, job)
-    q = api.query_range(reqwest, q_time1, q_time , step)
-    df3 = q.to_dataframe()
-    df3.dropna()
-    df3 = df3.astype({"value": "Int64"})
-    df3["date"] = pd.to_datetime(df3["timestamp"] + 10800, unit="s")
-    df1 = df3.copy()
-    df1 = df1.drop_duplicates (subset=['instance'])
-    for inst in df1['instance']:
-        df3.loc[((df3['instance'] == inst)), 'diff'] = df3["value"] - df3.shift(1)["value"]
-    df3["diff"] = df3["diff"].fillna(0)
-    df3.loc[df3['diff'] <0, 'diff'] = df3["value"]
+    df3 = prometh(nodet, q_time, q_time2)
     df3['sumtransmit'] =  round((df3.groupby(['instance'])['diff'].cumsum()/(1024*1024*1024)), 2)
-    df2 = df3.groupby(['instance'])['sumtransmit'].last()
-    df4 = pd.merge(df7, df2, left_on='instance', right_on='instance')
-    df4 = df4.sort_values('nodename')
-    df5 = df4[['nodename', 'sumreceive', 'sumtransmit']].copy()
-    df5 = df5.sort_values('nodename')
+    df4 = df3.groupby(['instance'])['sumtransmit'].last()
+    df8 = pd.merge(df7, df4, left_on='instance', right_on='instance')
+    df18 = df8[['nodename', 'job', 'instance', 'sumreceive', 'sumtransmit']].copy()
 
+    df9 = prometh(noder, q_time1, q_time2)
+    df9['sumreceivetoday'] =  round((df9.groupby(['instance'])['diff'].cumsum()/(1024*1024*1024)), 2)
+    df10 = df9.groupby(['instance'])['sumreceivetoday'].last()
+    df11 = pd.merge(df18, df10, left_on='instance', right_on='instance')
+    df19 = df11[['nodename', 'job', 'instance', 'sumreceive', 'sumtransmit','sumreceivetoday']].copy()
+
+    df12 = prometh(nodet, q_time1, q_time2)
+    df12['sumtransmitoday'] =  round((df12.groupby(['instance'])['diff'].cumsum()/(1024*1024*1024)), 2)
+    df13 = df12.groupby(['instance'])['sumtransmitoday'].last()
+    df14 = pd.merge(df19, df13, left_on='instance', right_on='instance')
+    df20 = df14[['nodename', 'job', 'instance', 'sumreceive', 'sumtransmit', 'sumreceivetoday', 'sumtransmitoday']].copy()
+    df20['sumtoday'] = round(df20[['sumreceivetoday','sumtransmitoday']].sum(axis=1), 2)
+
+    df20 = df20.sort_values('nodename')
+    df15 = df20[['nodename', 'sumreceive', 'sumtransmit', 'sumtoday']].copy()
+    df15 = df15.sort_values('nodename')
+    
     fig, ax = plt.subplots()
     fig.patch.set_visible(False)
-    table = ax.table(cellText=df5.values, colLabels=df5.columns, loc='center')
+    table = ax.table(cellText=df15.values, colLabels=df15.columns, loc='center')
     table.set_fontsize(22)
     table.scale(1,2)
     ax.axis('off')
@@ -79,8 +74,24 @@ async def command_job(message: types.Message) -> None:
     media = types.MediaGroup()
     media.attach_photo(b, 'Суммарный трафик приема и передачи в GB с начала месяца')
     await message.reply_media_group(media=media)
+    
     filename = "prometheus {}.xlsx".format(datetime.now().strftime("%d.%m.%y"))
-    await bot.send_document(message.chat.id, (filename, fit(df4)))
+    await bot.send_document(message.chat.id, (filename, fit(df20)))
+
+def prometh (node, time1, time2):
+    reqwest = '{} {{device="{}", job=~"{}"}}'.format(node, device, job)
+    q = api.query_range(reqwest, time1, time2 , step)
+    df = q.to_dataframe()
+    df.dropna()
+    df = df.astype({"value": "Int64"})
+    df["date"] = pd.to_datetime(df["timestamp"] + 10800, unit="s")
+    df1 = df.copy()
+    df1 = df1.drop_duplicates (subset=['instance'])
+    for inst in df1['instance']:
+        df.loc[((df['instance'] == inst)), 'diff'] = df["value"] - df.shift(1)["value"]
+    df["diff"] = df["diff"].fillna(0)
+    df.loc[df['diff'] <0, 'diff'] = df["value"]   
+    return df
 
 def fit (df):
     output = BytesIO()

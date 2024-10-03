@@ -22,7 +22,7 @@ df1 = df['kroks']
 listdf = df1.values
 @dp.message_handler(commands='instance')
 async def command_instance(message: types.Message) -> None:
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, selective=True, row_width = 4)
     markup.add(*listdf)
     await message.reply("Выберете оборудование", reply_markup=markup)
 @dp.message_handler(lambda message: message.text in listdf)

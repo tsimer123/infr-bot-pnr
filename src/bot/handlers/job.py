@@ -19,9 +19,9 @@ nodet = 'node_network_transmit_bytes_total'
 q_time = datetime(datetime.now().year, datetime.now().month, 1)
 q_time1 = datetime(datetime.now().year, datetime.now().month, datetime.now().day)
 q_time2 = datetime.now()
+
 device = 'wwan0'
-step = '1200'
-job = 'kroks-ural|kroks-msk'
+step = '180'
 api = PromqlHttpApi('http://192.1.0.106:12190')
 locale.setlocale(locale.LC_TIME, "ru_RU.UTF-8")
 @dp.message_handler(commands='job')
@@ -39,20 +39,20 @@ async def command_job(message: types.Message) -> None:
 
     df3 = prometh(nodet, q_time, q_time2)
     df3['sumtransmit'] =  round((df3.groupby(['instance'])['diff'].cumsum()/(1024*1024*1024)), 2)
-    df4 = df3.groupby(['instance'])['sumtransmit'].last()
-    df8 = pd.merge(df7, df4, left_on='instance', right_on='instance')
+    df3 = df3.groupby(['instance'])['sumtransmit'].last()
+    df8 = pd.merge(df7, df3, left_on='instance', right_on='instance')
     df18 = df8[['nodename', 'job', 'instance', 'sumreceive', 'sumtransmit']].copy()
 
     df9 = prometh(noder, q_time1, q_time2)
     df9['sumreceivetoday'] =  round((df9.groupby(['instance'])['diff'].cumsum()/(1024*1024*1024)), 2)
-    df10 = df9.groupby(['instance'])['sumreceivetoday'].last()
-    df11 = pd.merge(df18, df10, left_on='instance', right_on='instance')
+    df9 = df9.groupby(['instance'])['sumreceivetoday'].last()
+    df11 = pd.merge(df18, df9, left_on='instance', right_on='instance')
     df19 = df11[['nodename', 'job', 'instance', 'sumreceive', 'sumtransmit','sumreceivetoday']].copy()
 
     df12 = prometh(nodet, q_time1, q_time2)
     df12['sumtransmitoday'] =  round((df12.groupby(['instance'])['diff'].cumsum()/(1024*1024*1024)), 2)
-    df13 = df12.groupby(['instance'])['sumtransmitoday'].last()
-    df14 = pd.merge(df19, df13, left_on='instance', right_on='instance')
+    df12 = df12.groupby(['instance'])['sumtransmitoday'].last()
+    df14 = pd.merge(df19, df12, left_on='instance', right_on='instance')
     df20 = df14[['nodename', 'job', 'instance', 'sumreceive', 'sumtransmit', 'sumreceivetoday', 'sumtransmitoday']].copy()
     df20['sumtoday'] = round(df20[['sumreceivetoday','sumtransmitoday']].sum(axis=1), 2)
 
@@ -80,7 +80,7 @@ async def command_job(message: types.Message) -> None:
 
 def prometh (node, time1, time2):
     reqwest = '{} {{device="{}", job=~"{}"}}'.format(node, device, job)
-    q = api.query_range(reqwest, time1, time2 , step)
+    q = api.query_range(reqwest, time1, time2, step)
     df = q.to_dataframe()
     df.dropna()
     df = df.astype({"value": "Int64"})

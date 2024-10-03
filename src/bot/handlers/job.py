@@ -15,17 +15,15 @@ from matplotlib.ticker import MultipleLocator, FormatStrFormatter
 job = 'kroks-ural|kroks-msk'
 noder = 'node_network_receive_bytes_total'
 nodet = 'node_network_transmit_bytes_total'
-
-q_time = datetime(datetime.now().year, datetime.now().month, 1)
-q_time1 = datetime(datetime.now().year, datetime.now().month, datetime.now().day)
-q_time2 = datetime.now()
-
 device = 'wwan0'
 step = '180'
 api = PromqlHttpApi('http://192.1.0.106:12190')
 locale.setlocale(locale.LC_TIME, "ru_RU.UTF-8")
 @dp.message_handler(commands='job')
-async def command_job(message: types.Message) -> None:   
+async def command_job(message: types.Message) -> None: 
+    q_time = datetime(datetime.now().year, datetime.now().month, 1)
+    q_time1 = datetime(datetime.now().year, datetime.now().month, datetime.now().day)
+    q_time2 = datetime.now()
     plt.close('all')
     reqwest = 'node_uname_info{{job=~"{}"}}'.format(job)
     q = api.query(reqwest)

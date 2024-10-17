@@ -11,8 +11,12 @@ from promql_http_api import PromqlHttpApi
 from datetime import datetime
 from bot.create_bot import dp, bot
 from matplotlib.ticker import MultipleLocator, FormatStrFormatter
+from dotenv import load_dotenv
 
-api = PromqlHttpApi('http://192.1.0.106:12190')
+load_dotenv()
+HOST_PROMETHEUS = os.getenv("HOST_PROMETHEUS")
+PORT_PROMETHEUS = os.getenv("PORT_PROMETHEUS")
+api = PromqlHttpApi(f'http://{HOST_PROMETHEUS}:{PORT_PROMETHEUS}')
 job = 'kroks-ural|kroks-msk'
 reqwest = 'node_uname_info{{job=~"{}"}}'.format(job)
 q = api.query(reqwest)

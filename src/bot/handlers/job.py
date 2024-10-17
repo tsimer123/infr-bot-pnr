@@ -11,13 +11,17 @@ from promql_http_api import PromqlHttpApi
 from datetime import datetime
 from bot.create_bot import dp, bot
 from matplotlib.ticker import MultipleLocator, FormatStrFormatter
+from dotenv import load_dotenv
 
+load_dotenv()
+HOST_PROMETHEUS = os.getenv("HOST_PROMETHEUS")
+PORT_PROMETHEUS = os.getenv("PORT_PROMETHEUS")
+api = PromqlHttpApi(f'http://{HOST_PROMETHEUS}:{PORT_PROMETHEUS}')
 job = 'kroks-ural|kroks-msk'
 noder = 'node_network_receive_bytes_total'
 nodet = 'node_network_transmit_bytes_total'
 device = 'wwan0'
 step = '180'
-api = PromqlHttpApi('http://192.1.0.106:12190')
 locale.setlocale(locale.LC_TIME, "ru_RU.UTF-8")
 @dp.message_handler(commands='job')
 async def command_job(message: types.Message) -> None: 

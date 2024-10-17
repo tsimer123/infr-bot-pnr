@@ -13,3 +13,7 @@ database = str(os.environ.get('database'))
 
 # conf tg bot
 TOKEN = str(os.environ.get('TOKEN'))
+
+# conf pr bot
+HOST_PROMETHEUS = str(os.environ.get("HOST_PROMETHEUS"))
+PORT_PROMETHEUS = str(os.environ.get("PORT_PROMETHEUS"))

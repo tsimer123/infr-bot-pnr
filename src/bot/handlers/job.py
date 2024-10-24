@@ -21,7 +21,7 @@ job = 'kroks-ural|kroks-msk'
 noder = 'node_network_receive_bytes_total'
 nodet = 'node_network_transmit_bytes_total'
 device = 'wwan0'
-step = '180'
+step = '720'
 locale.setlocale(locale.LC_TIME, "ru_RU.UTF-8")
 @dp.message_handler(commands='job')
 async def command_job(message: types.Message) -> None: 

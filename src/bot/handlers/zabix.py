@@ -36,16 +36,19 @@ async def download_document(message: types.Message) -> None:
             df6 = df5[['№ п/п', 'Хост', 'ИмяхостA', 'Ip']].copy()
             df6 = df6.assign(a = '0')
             df6 = df6.assign(b = '0')
-            await bot.send_document(message.chat.id, ('response.xlsx', fit(max_row2, df, df4, df6)))
+            await bot.send_document(message.chat.id, ('set_item_status.xlsx', fit(max_row2, df, df4)))
+            await bot.send_document(message.chat.id, ('import_zabbix.xlsx', fit2(df6)))
         except ValueError:
-            print('Adress is invalid')
+            #print('Adress is invalid')
+            await message.reply(f"<b>Adress is invalid</b>", parse_mode = 'HTML')
 
-def fit (max_row2, df, df4, df6):
+
+def fit (max_row2, df, df4):
     output3 = BytesIO()
     writer = pd.ExcelWriter(output3, engine='xlsxwriter')
-    df4.to_excel(writer, index=False, sheet_name='status')
+    df4.to_excel(writer, index=False, sheet_name='Лист1')
     workbook = writer.book
-    worksheet = writer.sheets['status']
+    worksheet = writer.sheets['Лист1']
     col=5
     for port in (df['Порты'][0]).split(','):
         worksheet.write(0, col, port)
@@ -55,13 +58,21 @@ def fit (max_row2, df, df4, df6):
     (max_row, max_col) = df4.shape
     column_settings = [{'header': column} for column in df4.columns]
     worksheet.add_table(0, 0, max_row, max_col - 1, {'columns': column_settings, 'style': 'Table Style Medium 11' })
-    df6.to_excel(writer, index=False, sheet_name='import')
-    worksheet = writer.sheets['import']
+    workbook.close()
+    document = output3.getvalue()
+    return document
+
+def fit2 (df6):
+    output4 = BytesIO()
+    writer = pd.ExcelWriter(output4, engine='xlsxwriter')
+    df6.to_excel(writer, index=False, sheet_name='Лист1')
+    workbook = writer.book
+    worksheet = writer.sheets['Лист1']
     worksheet.autofit()
     (max_row, max_col) = df6.shape
     column_settings = [{'header': column} for column in df6.columns]
     worksheet.add_table(0, 0, max_row, max_col - 1, {'columns': column_settings, 'style': 'Table Style Medium 11' })
     workbook.close()
-    document = output3.getvalue()
+    document = output4.getvalue()
     return document
 

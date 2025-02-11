@@ -7,16 +7,16 @@ from bot.create_bot import dp, bot
 async def download_document(message: types.Message) -> None:
     output = BytesIO()
     await message.document.download(destination = output)
-    df = pd.read_excel(BytesIO(output), dtype=object)
+    df = pd.read_excel(output, dtype=object)
     if df.columns[0] == 'Ip':
         try:
             for ip in df['Ip']:
                 ip = ipaddress.IPv4Address(ip)
-            name = (df['Имя'].values[0]).astype(int)
+            #name = (df['Имя'].values[0]).astype(int)
             df.ffill(inplace=True)
             df['Шаблон'] = df['Шаблон'].astype(int)
             df['Статус'] = df['Статус'].astype(int)
-            df.loc[df['Имя'] != '', 'Имя'] = name + df.index
+            df.loc[df['Имя'] != '', 'Имя'] = df['Имя'].values[0] + df.index
             df['Имя'] = df['Имя'].astype(int)
             df3 = pd.DataFrame(columns=['Ip', 'Шаблон', 'Статус'])
             df4 = pd.DataFrame(columns=['Ip', 'Шаблон', 'Статус', 'item'])

@@ -72,6 +72,21 @@ class UsersPnr(Base):
      last_name: Mapped[str | None] = mapped_column(Text())
      full_name: Mapped[str | None] = mapped_column(Text())
      admin: Mapped[Boolean] = mapped_column(Boolean())
+     
+class KroksNetworkBytes(Base):
+     __tablename__ = "kroks_network_bytes"
+
+     id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+     nodename: Mapped[str | None] = mapped_column(Text())
+     job: Mapped[str | None] = mapped_column(Text())
+     instance: Mapped[str | None] = mapped_column(Text())
+     iccid: Mapped[str | None] = mapped_column(Text())
+     sim1: Mapped[Boolean] = mapped_column(Boolean())
+     sim2: Mapped[Boolean] = mapped_column(Boolean())
+     power: Mapped[Boolean] = mapped_column(Boolean())
+     receive: Mapped[int] = mapped_column(BigInteger)	 
+     transmit: Mapped[int] = mapped_column(BigInteger)
+     date: Mapped[datetime] = mapped_column(DateTime())
 
 class KroksNetworkBytesSum(Base):
      __tablename__ = "kroks_network_bytes_sum"

@@ -39,7 +39,7 @@ async def download_document(message: types.Message) -> None:
             await bot.send_document(message.chat.id, ('set_item_status.xlsx', fit(max_row2, df, df4)))
             await bot.send_document(message.chat.id, ('import_zabbix.xlsx', fit2(df6)))
         except ValueError:
-            text = "Строка {} IP адрес {} с ошибкой".format(df.index, ip)
+            text = "Строка {} IP адрес {} с ошибкой".format(df[df['Ip'] == ip].index.values, ip)
             await message.reply(text, parse_mode = 'HTML')
 
 def fit (max_row2, df, df4):

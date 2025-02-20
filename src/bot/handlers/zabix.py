@@ -13,6 +13,7 @@ async def download_document(message: types.Message) -> None:
             for ip in df['Ip']:
                 ip = ipaddress.IPv4Address(ip)
             #name = (df['Имя'].values[0]).astype(int)
+            df['Порты'] = (df['Порты'][0]).replace(' ', '')
             df.ffill(inplace=True)
             df['Шаблон'] = df['Шаблон'].astype(int)
             df['Статус'] = df['Статус'].astype(int)

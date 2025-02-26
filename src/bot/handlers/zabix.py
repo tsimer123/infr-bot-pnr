@@ -12,9 +12,9 @@ async def download_document(message: types.Message) -> None:
         try:
             for ip in df['Ip']:
                 ip = ipaddress.IPv4Address(ip)
-            df['Порты'] = df['Порты'][0].astype(str)
-            df['Порты'] = (df['Порты'][0]).replace(' ', '')
             df.ffill(inplace=True)
+            df['Порты'] = df['Порты'].astype(str)
+            df['Порты'] = (df['Порты'][0]).replace(' ', '')
             df['Шаблон'] = df['Шаблон'].astype(int)
             df['Статус'] = df['Статус'].astype(int)
             df.loc[df['Имя'] != '', 'Имя'] = df['Имя'].values[0] + df.index

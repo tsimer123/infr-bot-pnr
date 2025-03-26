@@ -4,13 +4,14 @@ import pandas as pd
 from dotenv import load_dotenv
 import datetime
 import locale
-from sqlalchemy import create_engine
+#from sqlalchemy import create_engine
 from datetime import datetime
 from io import BytesIO
 from aiogram import types
 from bot.create_bot import dp, bot
+from sql.engine import engine
 
-load_dotenv()
+#load_dotenv()
 #username_db = os.getenv("username_db")
 #password_db = os.getenv("password_db")
 #host_db = os.getenv("host_db")
@@ -18,6 +19,7 @@ load_dotenv()
 #database = os.getenv("database")
 #locale.setlocale(locale.LC_TIME, "ru_RU.UTF-8")
 
+db = engine
 @dp.message_handler(commands='kroks')
 async def command_kroks(message: types.Message) -> None: 
     timestart = datetime(datetime.now().year, datetime.now().month, 1)
@@ -25,7 +27,6 @@ async def command_kroks(message: types.Message) -> None:
     timestop = datetime.now()
     #conn_string = (f'postgresql+psycopg2://{username_db}:{password_db}@{host_db}:{port_db}/{database}')
     #db = create_engine(conn_string)
-    db = create_engine()
     conn = db.connect()
     sql_query = pd.read_sql(f"SELECT iccid, nodename, instance, COALESCE(imei) as imei, COALESCE(sim1) as sim1, COALESCE(sim2) as sim2, MAX(summa) as summa, MIN(date) as mindate, MAX(date) as maxdate FROM kroks_network_bytes_sum WHERE date BETWEEN '{timestart}' and '{timestop}' GROUP BY iccid, nodename, instance, imei, sim1, sim2 ORDER BY instance, mindate;", con=conn)
     df = pd.DataFrame(sql_query, columns = ['iccid', 'nodename', 'instance', 'imei', 'sim1', 'sim2', 'summa', 'mindate', 'maxdate'])

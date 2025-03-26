@@ -8,6 +8,7 @@ from bot.handlers.help import command_help
 from bot.handlers.ausweis import command_ausweis
 from bot.handlers.instance import command_instance
 from bot.handlers.job import command_job
+from bot.handlers.kroks import command_kroks
 from bot.handlers.zabix import download_document
 
 def register_handler_client(db: Dispatcher):
@@ -17,4 +18,5 @@ def register_handler_client(db: Dispatcher):
     dp.register_message_handler(command_ausweis, commands=['ausweis'], state="*")
     dp.register_message_handler(command_instance, commands=['instance'])
     dp.register_message_handler(command_job, commands=['job'])
+    dp.register_message_handler(command_kroks, commands=['kroks'])
     dp.register_message_handler(download_document, content_types=types.ContentType.DOCUMENT)

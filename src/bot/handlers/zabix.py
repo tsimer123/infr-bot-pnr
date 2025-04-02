@@ -12,7 +12,8 @@ async def download_document(message: types.Message) -> None:
         try:
             for ip in df['Ip']:
                 ip = ipaddress.IPv4Address(ip)
-            df.ffill(inplace=True)
+            #df.ffill(inplace=True)
+            df= df.infer_objects(copy=False).ffill()
             df['Порты'] = df['Порты'].astype(str)
             df['Порты'] = (df['Порты'][0]).replace(' ', '')
             df['Порты'] = (df['Порты'][0]).replace('.', ',')
